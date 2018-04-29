@@ -50,6 +50,8 @@ optional:
 - login_disk_size_gb
 - login_disk_type
 - preemptible_bursting
+- docker_container
+
 
 properties:
   cidr:
@@ -162,3 +164,9 @@ properties:
     type        : string
     description : Zone to run the instances in based on Region.
 
+  docker_container:
+    type        : string
+    default     : None
+    description : |
+      Docker_container to deploy. This will install docker-ce for centOS and pull a given image. 
+      For private registries use <username>:<password>@<registry>/<namespace>/<image>:<tag>

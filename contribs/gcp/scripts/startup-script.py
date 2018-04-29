@@ -40,6 +40,8 @@ EXTERNAL_COMPUTE_IPS = @EXTERNAL_COMPUTE_IPS@
 
 SLURM_PREFIX  = APPS_DIR + '/slurm/slurm-' + SLURM_VERSION
 
+DOCKER_CONTAINER  = '@DOCKER_CONTAINER@'
+
 MOTD_HEADER = '''
 
                                  SSSSSSS
@@ -205,6 +207,37 @@ def setup_munge():
 
 #END setup_munge ()
 
+def install_docker():
+    if str(DOCKER_CONTAINER) != 'None' :
+        subprocess.call(shlex.split("sudo yum install -y yum-utils device-mapper-persistent-data lvm2")) 
+        subprocess.call(shlex.split("sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo")) 
+        subprocess.call(shlex.split("sudo yum -y install docker-ce"))
+        subprocess.call(shlex.split("sudo systemctl start docker"))
+        if "@" not in DOCKER_CONTAINER:
+            f = open('/etc/motd', 'a')
+            MOTD_HEADER_add="\n\nPulling "+DOCKER_CONTAINER+".\n"
+            f.write(MOTD_HEADER_add)
+            f.close()
+            subprocess.call(['wall', '-n', '*** Pulling '+DOCKER_CONTAINER+' ***'])
+
+            subprocess.call(shlex.split("docker pull "+DOCKER_CONTAINER))
+
+        else:
+            registry_uname=DOCKER_CONTAINER.split("@")[0].split(":")[0]
+            registry_pass=DOCKER_CONTAINER.split("@")[0].split(":")[1]
+            image=DOCKER_CONTAINER.split("@")[1]
+            server=DOCKER_CONTAINER.split("@")[1].split("/")[0]
+
+            f = open('/etc/motd', 'a')
+            MOTD_HEADER_add="\n\nPulling "+image+".\n"
+            f.write(MOTD_HEADER_add)
+            f.close()
+            subprocess.call(['wall', '-n', '*** Pulling '+image+' ***'])
+
+            subprocess.call(shlex.split("docker login -u "+registry_uname+" -p "+registry_pass+" "+server ))
+            subprocess.call(shlex.split("docker pull "+image ))
+
+#END docker()
 
 def setup_nfs_exports():
 
@@ -768,6 +801,7 @@ def main():
 
     if INSTANCE_TYPE != "controller":
         mount_nfs_vols()
+        install_docker()
 
     if INSTANCE_TYPE == "controller":
         install_slurm()

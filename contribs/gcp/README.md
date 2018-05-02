@@ -65,20 +65,26 @@ Steps:
        default_users           : bob,joe
        munge_key               : <put munge key here>
    ```
-    Optionally you can also deploy a docker image and start the respective container in the login and computes by:
+   Optionally you can also deploy a docker image and start the respective container in the login and computes by:
 
-    ```
+   ```
        docker_container        : <image eg. ubuntu . For private repos use: user_name:pass_or_token@registry/namespace/image:tag >
-    ```
-    The respective container will have the name `softenv`. You can access it by for example:
-    ```
-    [bob@login1 ~]$ sudo docker exec -it softenv /bin/bash
-    ```
+   ```
+
+   The respective container will have the name `softenv`. You can access it by for example:
+
+   ```
+   [bob@login1 ~]$ sudo docker exec -it softenv /bin/bash
+   ```
+   
+   The folder `/home/projects/` also present in your home folder as a symbolic link will be mapped to the container's `/home/projects/`.
 
    You can generate a munge key by doing:
+
    ```
    date +%s | sha512sum | cut -d' ' -f1
    ```
+
    See also [Creating a Secret Key](https://github.com/dun/munge/wiki/Installation-Guide#user-content-creating-a-secret-key)
 
    **NOTE:** The version number must match the version of the link name found

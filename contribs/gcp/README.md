@@ -10,6 +10,10 @@ The supplied scripts can be modified to work with your environment.
 SchedMD provides professional services to help you get up and running in the
 cloud environment. [SchedMD Commercial Support](https://www.schedmd.com/support.php)
 
+## This fork: docker deployment
+
+This fork of the Slurm repo allows deploying docker, docker images, and start the respective containers in the background of each deployed node when deploying HPC clusters on GCP. We have also added `tmux`.
+
 ## Stand-alone Cluster in Google Cloud Platform
 
 The supplied scripts can be used to create a stand-alone cluster in Google Cloud
@@ -61,6 +65,15 @@ Steps:
        default_users           : bob,joe
        munge_key               : <put munge key here>
    ```
+    Optionally you can also deploy a docker image and start the respective container in the login and computes by:
+
+    ```
+       docker_container        : <image eg. ubuntu . For private repos use: user_name:pass_or_token@registry/namespace/image:tag >
+    ```
+    The respective container will have the name `softenv`. You can access it by for example:
+    ```
+    [bob@login1 ~]$ sudo docker exec -it softenv /bin/bash
+    ```
 
    You can generate a munge key by doing:
    ```
@@ -98,6 +111,7 @@ Steps:
    ```
    $ gcloud compute [--project=<project id>] ssh [--zone=<zone>] login1
    ...
+
    [bob@login1 ~]$ sinfo
    PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
    debug*       up   infinite      8  idle~ compute[3-10]
@@ -128,6 +142,12 @@ Steps:
    **NOTE:** If additional resources (instances, networks) are created other
    than the ones created from the default deployment then they will need to be
    destroyed before deployment can be removed.
+
+   ```
+   $ gcloud compute instances delete <instance name> --zone <zone> [--project=<project>]
+   ```
+
+More useful Slurm commands and a small Slurm "How to" can be found [here](https://github.com/mpg-age-bioinformatics/cluster_first_steps#slurm-simple-linux-utility-for-resource-management) and [here](http://bioinformatics.age.mpg.de/presentations-tutorials/presentations/modules/remote-server/#/slurm4) respectively. 
 
 ### Accessing Compute Nodes
 
@@ -608,3 +628,5 @@ space (e.g. same uids across all the clusters).
                  JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
                      8     debug     wrap      bob  R       0:12      1 compute1
     ```
+
+

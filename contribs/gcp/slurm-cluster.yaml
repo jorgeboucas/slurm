@@ -43,5 +43,8 @@ resources:
 
     docker_container        : ubuntu
     preemptible_bursting    : True
+    compute_preemptible     : True
+    login_preemptible       : True
+    controller_preemptible  : True
 
 #  [END cluster_yaml]

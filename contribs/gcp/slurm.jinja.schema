@@ -170,3 +170,24 @@ properties:
     description : |
       Docker_container to deploy. This will install docker-ce for centOS and pull a given image. 
       For private registries use <username>:<password>@<registry>/<namespace>/<image>:<tag>
+
+  compute_preemptible:
+    type        : boolean
+    default     : False
+    description : |
+      Whether compute nodes are preemptible instances or not. Make sure
+      to choose a zone that has preemptible resources.
+
+  login_preemptible:
+    type        : boolean
+    default     : False
+    description : |
+      Whether login nodes are preemptible instances or not. Make sure
+      to choose a zone that has preemptible resources.
+
+  controller_preemptible:
+    type        : boolean
+    default     : False
+    description : |
+      Whether controller nodes are preemptible instances or not. Make sure
+      to choose a zone that has preemptible resources.

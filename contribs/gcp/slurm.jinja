@@ -75,6 +75,10 @@ resources:
         sourceImage: https://www.googleapis.com/compute/v1/projects/centos-cloud/global/images/family/centos-7
         diskType: https://www.googleapis.com/compute/v1/projects/{{ env["project"] }}/zones/{{ properties["zone"] }}/diskTypes/{{ properties["controller_disk_type"] }}
         diskSizeGb: {{ properties["controller_disk_size_gb"] }}
+    scheduling:
+      preemptible: {{ properties["controller_preemptible"] }}
+      onHostMaintenance: TERMINATE
+      automaticRestart: false
 {% if not properties['external_compute_ips'] %}
     canIpForward: true
 {% endif %}
@@ -138,6 +142,10 @@ resources:
     tags:
       items:
         - login
+    scheduling:
+      preemptible: {{ properties["login_preemptible"] }}
+      onHostMaintenance: TERMINATE
+      automaticRestart: false
     metadata:
       items:
         - key: startup-script
@@ -175,6 +183,10 @@ resources:
     tags:
       items:
         - compute
+    scheduling:
+      preemptible: {{ properties["compute_preemptible"] }}
+      onHostMaintenance: TERMINATE
+      automaticRestart: false
     metadata:
       items:
         - key: startup-script
